@@ -12,7 +12,7 @@ function configIniciales() {
   intentosRestantes = 3; //facil
   let opcion = parseInt(
     prompt(
-      "!Bienvenido! Escribe 1 para jugar en modo fácil, 2 dificil, 3 muy dificil, otro para salir: "
+      "!Bienvenido! Escribe 1 para jugar en modo fácil, 2 dificil, 3 muy dificil, otro para salir: (Si está desde un celular, en ajustes marque 'Sitio para computadoras'"
     )
   );
   switch (opcion) {
@@ -111,7 +111,7 @@ function verificarIntento() {
   } else {
     jugar(numUsuario);
   }
-  if ((intentosRestantes === 0)) {
+  if (intentosRestantes === 0) {
     addTextToSelector(
       "p",
       `Te quedaste sin intentos. El número secreto era: ${numeroSecreto}`
