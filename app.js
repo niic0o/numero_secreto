@@ -3,17 +3,43 @@ let intentos;
 let numeroSecreto = 0;
 let numUsuario = 0;
 let numerosGenerados = [];
-let intentosRestantes;
+let intentosRestantes = 0;
+
+configIniciales();
 
 function configIniciales() {
+  intentos = 0;
+  intentosRestantes = 3; //facil
+  let opcion = parseInt(
+    prompt(
+      "!Bienvenido! Escribe 1 para jugar en modo fácil, 2 dificil, 3 muy dificil, otro para salir: "
+    )
+  );
+  switch (opcion) {
+    case 1:
+      max = 10;
+      break;
+    case 2:
+      (max = 50), (intentosRestantes = 5);
+      break;
+    case 3:
+      (max = 100), (intentosRestantes = 7);
+      break;
+    default:
+      alert("Hasta pronto!");
+      addTextToSelector("h1", "El juego ha terminado");
+      addTextToSelector(
+        "p",
+        "Presione F5 para volver a jugar, o deslice el dedo hacia abajo en su pantalla táctil"
+      );
+      ocultarBotones();
+      return;
+  }
   addTextToSelector("h1", "Adivina el número secreto");
   addTextToSelector("p", `El número secreto está entre 1 y ${max}`);
   numeroSecreto = generarNumeroSecreto();
-  intentos = 0;
-  intentosRestantes = 3;
 }
 
-configIniciales();
 /*hoisting en accion*/
 /**
  * @param {string} p_selector recibe la etiqueta HTML
@@ -42,7 +68,8 @@ function generarNumeroSecreto() {
     ocultarBotones();
     return 0;
   } else {
-    if (!numerosGenerados.includes(nuevoNum)) { //if not true
+    if (!numerosGenerados.includes(nuevoNum)) {
+      //if not true
       numerosGenerados.push(nuevoNum);
       return nuevoNum;
     } else {
@@ -76,44 +103,51 @@ function ocultarBotones() {
  * Compara con el numero secreto y configura los mensajes de acuerdo el suceso ocurrido
  */
 function verificarIntento() {
-  do {
-    let numUsuario = parseInt(document.getElementById("valorUsuario").value);
-    if (isNaN(numUsuario) || numUsuario < 1 || numUsuario > max) {
-      alert(`¡Debes ingresar un número entre 1 y ${max}!`);
-      limpiarCaja();
-      return;
-    } else {
-      intentos++;
-      intentosRestantes--;
-      if (numUsuario === numeroSecreto) {
-        addTextToSelector(
-          "p",
-          `¡Felicidades! Has acertado el número secreto en ${intentos} ${
-            intentos === 1 ? "intento" : "intentos"
-          } `
-        );
-        reiniciarBotones();
-        return;
-      } else if (numUsuario < numeroSecreto) {
-        addTextToSelector(
-          "p",
-          `El número secreto es mayor que ${numUsuario}. ${
-            intentosRestantes === 1 ? "Intento" : "Intentos"
-          } restantes: ${intentosRestantes}`
-        );
-      } else {
-        addTextToSelector(
-          "p",
-          `El número secreto es menor que ${numUsuario}. ${
-            intentosRestantes === 1 ? "Intento" : "Intentos"
-          } restantes: ${intentosRestantes}`
-        );
-      }
-      limpiarCaja();
-    }
-  } while (intentosRestantes > 0);
-  addTextToSelector("p", `Te quedaste sin intentos. El número secreto era: ${numeroSecreto}`);
-  reiniciarBotones();
+  let numUsuario = parseInt(document.getElementById("valorUsuario").value);
+  if (isNaN(numUsuario) || numUsuario < 1 || numUsuario > max) {
+    alert(`¡Debes ingresar un número entre 1 y ${max}!`);
+    limpiarCaja();
+    return;
+  } else {
+    jugar(numUsuario);
+  }
+  if ((intentosRestantes === 0)) {
+    addTextToSelector(
+      "p",
+      `Te quedaste sin intentos. El número secreto era: ${numeroSecreto}`
+    );
+    reiniciarBotones();
+  }
+}
+//Contiene la logica del juego una vez verificada las condiciones
+function jugar(p_numUsuario) {
+  intentos++;
+  intentosRestantes--;
+  if (p_numUsuario === numeroSecreto) {
+    addTextToSelector(
+      "p",
+      `¡Felicidades! Has acertado el número secreto en ${intentos} ${
+        intentos === 1 ? "intento" : "intentos"
+      } `
+    );
+    reiniciarBotones();
+    return;
+  } else if (p_numUsuario < numeroSecreto) {
+    addTextToSelector(
+      "p",
+      `El número secreto es mayor que ${p_numUsuario}. ${
+        intentosRestantes === 1 ? "Intento" : "Intentos"
+      } restantes: ${intentosRestantes}`
+    );
+  } else {
+    addTextToSelector(
+      "p",
+      `El número secreto es menor que ${p_numUsuario}. ${
+        intentosRestantes === 1 ? "Intento" : "Intentos"
+      } restantes: ${intentosRestantes}`
+    );
+  }
+  limpiarCaja();
 }
 
 function limpiarCaja() {
